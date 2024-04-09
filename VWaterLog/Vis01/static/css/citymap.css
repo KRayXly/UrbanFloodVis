@@ -1,0 +1,608 @@
+@charset "UTF-8";
+/**
+ * 
+ * @authors Lin Zhiyun
+ * @date    2024-02-20
+ * @version mainPage
+ */
+ html, body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    /* font-family: Microsoft YaHei, tahoma, arial, Hiragino Sans GB, \\5b8b\4f53, sans-serif; */
+    font-family: 'HarmonyOS', sans-serif;
+    letter-spacing: 1px;
+}
+h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    color: #eeeeee;
+}
+h3 {
+    margin: 0;
+    font-weight: 500;
+    font-size: 17px;
+    color: #eeeeee;
+}
+select {
+    border: none;
+    /* -webkit-appearance: none;
+    -moz-appearance: none; */
+    appearance: none;
+    background-color: rgba(51, 51, 51, 1);
+    padding: 0 10px;
+    color: #eeeeee;   
+    font-size: 20px;
+    height: 40px;
+    font-weight: 100;
+    font-family: 'HarmonyOS', sans-serif;
+}
+select {
+    border: none;
+    /* -webkit-appearance: none;
+    -moz-appearance: none; */
+    appearance: none;
+    background-color: rgba(51, 51, 51, 1);
+    padding: 0 10px;
+    color: #eeeeee;   
+    font-size: 20px;
+    height: 40px;
+    font-weight: 100;
+    font-family: 'HarmonyOS', sans-serif;
+}
+select option {
+    font-size: 18px;
+    line-height: 40px;
+    font-weight: 100;
+    font-family: 'HarmonyOS', sans-serif;
+}
+#loading {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    z-index: 1000; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+#loading-down{
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: #f49f42; 
+    z-index: 900; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+}
+#world {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: linear-gradient(#e4e0ba, #f7d9aa);
+}
+
+.loadingtext {
+    position: relative;
+    font-size: 40px;
+    font-weight: 700;
+    font-family: Raleway, Helvetica Neue, Helvetica, Arial, sans-serif;
+    text-align: center;
+    color: black;
+    opacity: 0.8;
+    display: inline-block;
+}
+
+@keyframes wave {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* 为每个字符添加单独的动画效果 */
+.loadingtext span {
+    display: inline-block;
+    animation: wave 2s infinite;
+    text-shadow: 5px 5px 5px rgba(0,0,0,0.3);
+}
+
+/* 为每个字符设置不同的动画延迟 */
+.loadingtext span:nth-child(1) { animation-delay: 0s; }
+.loadingtext span:nth-child(2) { animation-delay: 0.2s; }
+.loadingtext span:nth-child(3) { animation-delay: 0.4s; }
+.loadingtext span:nth-child(4) { animation-delay: 0.6s; }
+.loadingtext span:nth-child(5) { animation-delay: 0.8s; }
+.loadingtext span:nth-child(6) { animation-delay: 1s; }
+.loadingtext span:nth-child(7) { animation-delay: 1.2s; }
+.loadingtext span:nth-child(8) { animation-delay: 1.4s; }
+.loadingtext span:nth-child(9) { animation-delay: 1.6s; }
+.loadingtext span:nth-child(10) { animation-delay: 1.8s; }
+.main-city {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    height: 95%;
+    background-color: rgba(51,51,51);
+    padding-top: 10px;
+}
+.show {
+    display: block;
+}
+.hidden {
+    display: none;
+}
+.city-left, .city-center, .city-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.city-left {
+    width: 350px; /* 调整为实际宽度 */
+    margin: 0 10px;
+}
+.city-headelse {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
+    margin: 10px 10px;
+}
+.city-headelse button {
+    border: 0; /* 设置边框 */
+    padding: 5px 10px; /* 设置内边距 */
+    font-size: 15px; /* 设置字体大小 */
+    font-weight: 100;
+    border-radius: 5px;
+    cursor: pointer; /* 设置鼠标悬停时的光标样式 */
+    transition: background-color 0.3s, color 0.3s; /* 设置颜色变化的过渡效果 */
+    font-family: 'HarmonyOS', sans-serif;
+}
+
+#return {
+    color: #eeeeee; /* 设置字体颜色为白色 */
+    border-color: #eeeeee; /* 设置边框颜色为白色 */
+    background-color: rgba(51,51,51); /* 设置背景色为黑色 */
+}
+
+#return:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* 鼠标悬停时的背景色变化 */
+}
+
+#save {
+    color: #303030; /* 设置字体颜色为黑色 */
+    border-color: #303030; /* 设置边框颜色为黑色 */
+    background-color: #eeeeee; /* 设置背景色为白色 */
+    font-weight: 500;
+}
+
+#save:hover {
+    background-color: rgba(51, 51, 51, 0.1); /* 鼠标悬停时的背景色变化 */
+}
+.city-map {
+    flex: 1;
+    margin: 10px;
+}
+.city-weather {
+    height: 40%;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.wealist {
+    margin: 5px;
+    flex: 1;
+    overflow-y: auto; /* 当内容溢出容器时，添加垂直滚动条 */
+    padding-right: 10px;
+}
+.wealist table {
+    width: 100%; /* 表格宽度为100% */
+    border: none;
+}
+
+.wealist th {
+    color: #eeeeee;
+    font-weight: 500;
+    font-size: 16px;
+    border: none;
+    position: sticky; /* 使表头固定 */
+    top: 0; /* 表头位于容器顶部 */
+    z-index: 1; /* 提升层级，使表头显示在内容之上 */
+    background-color: rgba(51,51,51);
+}
+.wealist td {
+    color: #eeeeee;
+    font-weight: 100;
+    font-size: 13px;
+    text-align: center;
+    border: none;
+    height: 30px;
+}
+.wealist td:first-child {
+    color: #f49f42; /* 设置第一列数据颜色为黄色 */
+}
+.wealist td:last-child {
+    color: #73b9bc /* 设置第一列数据颜色为黄色 */
+}
+/* 滚动条整体样式 */
+.wealist::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* 滚动条轨道样式 */
+.wealist::-webkit-scrollbar-track {
+    background: #eeeeee;
+    border-radius: 5px;
+}
+
+/* 滚动条滑块样式 */
+.wealist::-webkit-scrollbar-thumb {
+    background: rgb(170, 170, 170);
+    border-radius: 5px;
+}
+
+/* 滚动条滑块悬停时的样式 */
+.wealist::-webkit-scrollbar-thumb:hover {
+    background: #73a373;
+}
+.city-center {
+    width: 800px; /* 调整为实际宽度 */
+}
+.dis-text {
+    position: absolute;
+    top: 20px;
+    left: 370px;
+    z-index: 100;
+}
+.dis-text h2 {
+    margin-top: 20px;
+    margin-left: 20px;
+    color: #ea7e53;
+    font-weight: 900;
+    font-size: 22px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+/* .dis-text span {
+    color: #8dc1a9;
+    font-weight: 300;
+} */
+.district-map {
+    height: 60%;
+    margin: 10px;
+    border-radius: 10px;
+}
+.c-list {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+}
+.district-lasttimeselect{
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+    width: 660px;
+    height: 260px;
+    background-color: rgba(0, 0, 0, 0.5); /* 设置背景颜色为半透明黑色 */
+    backdrop-filter: blur(10px); /* 应用模糊效果 */
+    -webkit-backdrop-filter: blur(10px); /* Safari 浏览器的兼容性 */
+    opacity: 0.9;
+    margin: 0 10px;
+    margin-top: -340px;
+    border-radius: 10px;
+    padding: 20px;
+}
+.district-lasttimeselect> .now-row {
+    margin: 20px;
+    width: 80%;
+    margin-bottom: 5px;
+}
+.district-lasttimeselect> .now-row> .nowlist>.nowlist-data {
+    color: #eeeeee;
+}.district-lasttimeselect> .now-row> .nowlist>.nowlist-data span {
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.click-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    width: 90%;
+    margin: 0;
+}
+.click-row h2 {
+    letter-spacing: 3px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.click-row h3 {
+    font-size: 14px;
+    font-weight: 100;
+}
+.click-line {
+    flex: 1;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px; 
+    width: 15px;
+    padding: 7px;
+    cursor: pointer;
+    color: #eeeeee;
+    font-size: 30px;
+    font-weight: 100x;
+    transition: opacity 0.7s ease;
+}
+.close-btn:hover {
+    opacity: 0.2;
+}
+
+.district-forecast {
+    width: 370px;
+    margin: 10px;
+    display: flex;
+}
+
+.for-water {
+    flex: 1;
+}
+.for-waring {
+    flex: 1;
+}
+.waring-head {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+.waring-left{
+    flex: 1;
+    margin-left: 5px;
+}
+.waring-line {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding-right: 14px;
+}
+.waring-line span {
+    font-size: 13px;
+    font-weight: 100;
+    color: #a1a1a1;
+}
+.waring-right{
+    width: 56px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+.waring-icon {
+    width: 40px;
+    filter: invert(100%);
+}
+/* .line {
+    height: 1px;
+    width: 100%;
+    background-color: #eeeeee;
+    margin: 0;
+    padding: 0;
+} */
+.waring-body {
+    height: 99px;
+    width: 91%;
+    padding: 10px;
+    overflow-y: auto;
+    padding-right: 20px;
+}
+.waring-body span {
+    font-size: 14px;
+    font-weight: 100;
+    color: #eeeeee;
+    line-height: 15px;
+}
+
+/* 滚动条整体样式 */
+.waring-body::-webkit-scrollbar {
+    width: 5px;
+    height: 80px;
+}
+/* 滚动条轨道样式 */
+.waring-body::-webkit-scrollbar-track {
+    background: #eeeeee;
+    border-radius: 5px;
+    height: 80px;
+}
+/* 滚动条滑块样式 */
+.waring-body::-webkit-scrollbar-thumb {
+    background: rgb(170, 170, 170);
+    border-radius: 5px;
+}
+/* 滚动条滑块悬停时的样式 */
+.waring-body::-webkit-scrollbar-thumb:hover {
+    background: #73a373;
+}
+.district-now {
+    flex: 1;
+    margin: 10px;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+}
+.now-data {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.now-weather {
+    height: 40%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#icondata {
+    display: flex;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    padding-left: 5px;
+    margin-bottom: 0;
+    margin-top: 5px;
+    height: 30px;
+}
+#condition_text {
+    color: #eeeeee;
+    font-size: 20px;
+    font-weight: 700;
+}
+.condition_icon {
+    width: 80px;
+    border-radius: 5px;
+    filter: invert(100%);
+    margin-right: 10px;
+}
+.condition_icon:hover img {
+    opacity: 1;
+}
+.now-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    width: 100%;
+}
+.now-rowtitle {
+    margin-top: -10px;
+    margin-left: 10px;
+    font-size: 13px;
+    font-weight: 100;
+    color: #a1a1a1;
+}
+.nowlist {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 27%;
+    margin-bottom: 8px;
+    padding-right: 10px;
+}
+.nowlist-show {
+    position: relative;
+}
+.nowlist-show img {
+    width: 34px;
+    height: 34px;
+    opacity: 1;
+    transition: opacity 0.7s ease;
+}
+.nowlist-show span {
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    font-size: 14px;
+    font-weight: 500;
+    color: #eeeeee;
+}
+.nowlist-show:hover img {
+    opacity: 0;
+}
+.nowlist-show:hover span {
+    opacity: 1;
+}
+
+.nowlist-data {
+    display: flex;
+    height: 40px;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 100;
+    color: #a1a1a1;
+}
+.nowlist-data span {
+    font-size: 17px;
+    font-weight: 700;
+    margin-right: 5px;
+    color: #eeeeee;
+}
+
+
+.city-right {
+    width: 350px; /* 调整为实际宽度 */
+    margin: 0 10px;
+}
+.city-landform {
+    height: 30%;
+    margin: 10px;
+}
+.city-landuse {
+    flex: 1;
+    margin: 10px;
+}
+.district-facility {
+    height: 18%;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.f-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; /* 让 .f-box 垂直居中 */
+    margin-top: 20px;
+}
+.f-box {
+    width: 100px;
+    height: 100px;
+    display: flex; /* 使用 flexbox 布局 */
+    flex-direction: column; /* 纵向布局 */
+    align-items: center; /* 垂直居中对齐 */
+}
+.f-box img {
+    width: 40px
+}
+.f-data {
+    margin-top: 5px;
+    color: #a1a1a1;
+    font-weight: 100;
+    font-size: 14px;
+}
+.f-data span {
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 5px;
+    color: #eeeeee;
+}
+
+.main-bottom {
+    background-color: #303030 ;
+    height: 5%;
+    color: #ffffff;
+    text-align: center;
+}
+

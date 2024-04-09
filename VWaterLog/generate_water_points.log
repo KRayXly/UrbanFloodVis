@@ -1,0 +1,64 @@
+
+2024-03-28 22:57:09,571 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:10,106 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:11,325 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:11,828 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:15,104 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:15,616 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:16,847 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:17,336 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:18,529 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:19,025 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:25,450 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:25,925 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:28,190 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:28,701 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:29,921 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:30,423 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:34,737 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:35,230 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:36,463 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:36,967 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:40,235 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:40,715 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:42,966 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:43,482 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:44,679 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:45,195 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:46,424 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:46,932 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:48,151 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:48,632 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 22:57:50,864 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 22:57:51,382 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 23:11:17,256 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 23:11:20,326 - ERROR - Error generating water points: Cannot assign "'110100'": "LandUse.city_geocode" must be a "City" instance.
+2024-03-28 23:11:27,753 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 23:11:28,474 - INFO - Successfully generated water points.
+2024-03-28 23:11:36,961 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 23:43:11,664 - ERROR - Error generating water points: name 'Terrain' is not defined
+2024-03-28 23:43:22,206 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 23:43:51,243 - ERROR - Error generating water points: name 'Terrain' is not defined
+2024-03-28 23:44:08,030 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-28 23:44:08,759 - INFO - Successfully generated water points.
+2024-03-28 23:44:16,180 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:05:23,484 - ERROR - Error generating water points: name 'hill_range' is not defined
+2024-03-29 00:05:56,238 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:05:56,762 - ERROR - Error generating water points: name 'water_body_range' is not defined
+2024-03-29 00:05:57,975 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:05:58,481 - ERROR - Error generating water points: name 'water_body_range' is not defined
+2024-03-29 00:06:00,741 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:06:01,244 - ERROR - Error generating water points: name 'water_body_range' is not defined
+2024-03-29 00:06:09,723 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:06:10,222 - ERROR - Error generating water points: 'water_body'
+2024-03-29 00:06:16,625 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:06:17,127 - ERROR - Error generating water points: 'water_body'
+2024-03-29 00:06:19,382 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:06:19,879 - ERROR - Error generating water points: 'water_body'
+2024-03-29 00:06:21,094 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:06:21,601 - ERROR - Error generating water points: 'water_body'
+2024-03-29 00:06:29,042 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:06:29,778 - INFO - Successfully generated water points.
+2024-03-29 00:06:41,389 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.
+2024-03-29 00:07:59,229 - INFO - Successfully generated water points.
+2024-03-29 00:08:03,571 - INFO - D:\Lin\project\v-waterlog\VWaterLog\Vis01\views.py changed, reloading.

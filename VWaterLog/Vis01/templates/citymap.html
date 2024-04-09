@@ -1,0 +1,1117 @@
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>UrbanFloodVis 城市内涝可视化平台</title>
+    <link rel="stylesheet" href="{% static 'css/citymap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> -->
+    <!-- <link href="http://povestea-noastra.com/theme/huge404/Poly%20World%203D/404/images/favicon.ico" rel="shortcut icon" type="image/x-icon"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script type="text/javascript" src="{% static 'js/mapstyle.js' %}"></script>
+    <script src="//bj.bcebos.com/v1/mapopen/api-demos/js/mapStyle.js"></script>
+    <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=M3WLi64HOESiQu4rCLUH6mXwLYaPqLKR"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+
+    <!-- <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak={M3WLi64HOESiQu4rCLUH6mXwLYaPqLKR}"></script> -->
+</head>
+<body>
+    <div id="loading">
+        <div id="world"></div>
+        <div class="loadingtext">Loading...</div>
+    </div>
+    <div id="loading-down">
+    </div>
+    <div class="main-city">
+        <div class="city-left">
+            <div class="city-headelse">
+                <button id="return">< 返回</button>
+                <span id="locationthis" style="opacity: 0;"></span>
+                <button id="save">保存</button>
+            </div>
+
+            <div class="city-map" id="c-map">
+                <!-- 这里使用echarts绘制省份城市地图 -->         
+            </div>
+            <div class="city-weather">
+                <h2 id="wea-head"></h2>
+                <div class="wealist">
+
+                </div>
+             <!-- 这里将通过JavaScript动态插入天气数据 -->
+            </div>
+        </div>
+        
+        <div class="city-center">
+            <div class="dis-text">
+                <h2 id="citymap-title"></h2>
+            </div>
+            <div class="district-map" id="d-map">
+                <!-- 这里使用百度地图绘制区域易积水点位分布地图，左上角标注城市易积水点累计数量 -->
+            </div>
+            <div class="c-list">
+                <div class="district-lasttimeselect animate__bounceIn">
+                    <span class="close-btn" onclick="closeDiv()"><img src="{% static 'img/close.svg' %}"></span>
+                    <div class="click-row">
+                        <h2 id="click-data"></h2>
+                        <h3 id="click-location"></h3>
+                    </div>
+                    <div class="now-row">
+                        <div class="nowlist">
+                            <div class="nowlist-show">
+                                <img src="{% static 'img/降水量.png' %}">
+                                <span>总降水量</span>
+                            </div>
+                            <div class="nowlist-data">
+                                <span id="click-precipitation"></span> mm
+                            </div>
+                        </div>
+                        <div class="nowlist">
+                            <div class="nowlist-show">
+                                <img src="{% static 'img/最高温度.png' %}">
+                                <span>最高温度</span>
+                            </div>
+                            <div class="nowlist-data">
+                                <span id="click-high"></span> ℃
+                            </div>
+                        </div>
+                        <div class="nowlist">
+                            <div class="nowlist-show">
+                                <img src="{% static 'img/最低温度.png' %}">
+                                <span>最低温度</span>
+                            </div>
+                            <div class="nowlist-data">
+                                <span id="click-low"></span> ℃
+                            </div>
+                        </div>
+                    </div>
+                    <div class="click-line" id="click-line4">
+                        <!-- 绘制历史降水温度积水深度变化 -->
+                    </div>
+
+
+
+                </div>
+                 <!-- 实时降水、气温、风力风速 -->
+                 <div class="district-now">
+                    <!-- <h2>点位实时数据</h2> -->
+                    <div class="now-data">
+                        <div class="now-row">
+                            <select id="date-select"></select>
+                            <div class="nowlist" id="icondata">
+                                <div class="nowlist-show">
+                                    <img class="condition_icon">
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="condition_text"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="now-row">
+                            <span class="now-rowtitle" id="now-rowtitle"></span>
+                        </div>
+                        <div class="now-row">
+                            <div class="nowlist">
+                                <div class="nowlist-show">
+                                    <img src="{% static 'img/降水量.png' %}">
+                                    <span>降水</span>
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="precipitation"></span> mm/h
+                                </div>
+                            </div>
+                            <div class="nowlist">
+                                <div class="nowlist-show">
+                                    <img src="{% static 'img/土壤相对湿度.png' %}">
+                                    <span>湿度</span>
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="humidity"></span> %
+                                </div>
+                            </div>
+                            <div class="nowlist">
+                                <div class="nowlist-show">
+                                    <img src="{% static 'img/气温.png' %}">
+                                    <span>气温</span>
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="temperature"></span> ℃
+                                </div>
+                            </div>
+                        </div>
+                        <div class="now-row">
+                            <div class="nowlist">
+                                <div class="nowlist-show">
+                                    <img src="{% static 'img/风向.png' %}">
+                                    <span>风向</span>
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="wind_direction"></span>
+                                </div>
+                            </div>
+                            <div class="nowlist">
+                                <div class="nowlist-show">
+                                    <img src="{% static 'img/风力.png' %}">
+                                    <span>风力</span>
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="wind_scale"></span> 级风
+                                </div>
+                            </div>
+                            <div class="nowlist">
+                                <div class="nowlist-show">
+                                    <img src="{% static 'img/风速.png' %}">
+                                    <span>风速</span>
+                                </div>
+                                <div class="nowlist-data">
+                                    <span id="wind_speed"></span> km/h
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                 <!-- 实时降水趋势图 -->
+                <div class="district-forecast">
+                    <div class="for-water hidden" id="forwater">
+                    </div>
+                    <div class="for-waring" id="forwaring">
+                        <h2>天气灾害预警</h2>
+                        <div class="waring-head">
+                            <div class="waring-left">
+                                <h3 id="waring-title"></h3>
+                                <div class="waring-line">
+                                    <span id="waring-time"></span>
+                                    <span id="waring-sender"></span>
+                                </div>
+                            </div>
+                            <div class="waring-right">
+                                <img class="waring-icon">
+                            </div>
+                        </div>
+                        <!-- <div class="line"></div> -->
+                        <div class="waring-body">
+                            <span id="waring-text"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="city-right">         
+            <div class="city-landform" id="terrain">
+                <!-- 省份地形地貌 -->
+            </div>
+            <div class="district-facility">
+                <!-- 市级基础设施 -->
+                <h2 id="f-head">市级基础设施</h2>
+                <div class="f-list">
+                    <div class="f-box">
+                        <img src="{% static 'img/居民楼.png' %}">
+                        <div class="f-data">住宅区  <span id="house-data">185</span></div>
+                    </div>
+                    <div class="f-box">
+                        <img src="{% static 'img/学校.png' %}">
+                        <div class="f-data">学校  <span id="school-data">26</span></div>
+                    </div>
+                    <div class="f-box">
+                        <img src="{% static 'img/医院.png' %}">
+                        <div class="f-data">医院  <span id="hospital-data">32</span></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 省份一级土地利用分类占比 -->
+            <div class="city-landuse" id="landuse"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-bottom">
+        <li>Lin @ <a href="">github</a></li>
+    </div>
+    <script src="{% static 'js/three.min.js' %}"></script>
+	<script src="{% static 'js/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/china.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/mapstyle.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dark.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/e-map.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/e-data.js' %}"></script>
+    
+    
+    <script>
+        var colorList = ['#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78', '#73a373', '#73b9bc', '#7289ab', '#91ca8c', '#f49f42'];
+        // 从上一个界面获取 fullname 参数
+        var urlParams = new URLSearchParams(window.location.search);
+        var fullname = urlParams.get('fullname');
+        var filepath = "../static/js/city/"+ fullname +".json"; // 创建文件路径
+        // console.log('省份全称：', fullname);
+
+        // 绘制echarts
+        var myChart = echarts.init(document.getElementById('c-map'),'dark');
+        var terrainpie = echarts.init(document.getElementById('terrain'), "dark");
+        var landpie = echarts.init(document.getElementById('landuse'),'dark');
+        // 后端获取数据列表
+        var cityWaterpointsDict = {};
+        var cityNamesList = [];
+        var districtList = [];
+        var waterPointList = [];
+        var landUse = [];
+        var terrain = [];
+
+        var fhead = document.getElementById("f-head");
+        var housedata = document.getElementById("house-data");
+        var schooldata = document.getElementById("school-data");
+        var hospitaldata = document.getElementById("hospital-data");
+        var weahead = document.getElementById("wea-head");
+        var iconImg = "{% static 'img/标记点.png' %}";
+        var iconImg2 = "{% static 'img/标记点-copy.png' %}";
+        var cityWeatherDiv = document.querySelector('.wealist');
+        var forWater = document.getElementById("forwater");
+        var forWaring = document.getElementById("forwaring");
+        
+        // 两个按钮动作模块
+        document.getElementById('return').addEventListener('click', function() {
+            window.history.back(); // 返回上一个页面
+        });
+
+        document.getElementById('save').addEventListener('click', function() {
+            html2canvas(document.body, {
+                useCORS: true
+            }).then(function(canvas) {
+                var imageSrc = canvas.toDataURL("image/png");
+                var downloadLink = document.createElement('a');
+                downloadLink.href = imageSrc;
+                downloadLink.download = "saved_page.png"; // 指定下载文件名
+                document.body.appendChild(downloadLink);
+                downloadLink.click(); // 触发下载
+                document.body.removeChild(downloadLink); // 移除下载链接
+            });
+        });
+
+        document.getElementById('date-select').addEventListener('change', function() {
+            var selectedDate = this.value;
+            var currentDate = new Date();
+            
+            // 格式化当前日期为字符串
+            var todayString = currentDate.getFullYear() + '年' +
+                            (currentDate.getMonth() + 1 < 10 ? '0' : '') + (currentDate.getMonth() + 1) + '月' +
+                            (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate() + '日';
+
+            // 比较选择的日期和今天的日期
+            if (selectedDate !== todayString) {
+                openDiv(selectedDate); // 如果选择的不是今天的日期，则打开div
+            } else {
+                closeDiv(); // 如果选择的是今天，则关闭div
+            }
+        });
+
+        // 加载界面
+        window.onload = function() {
+            var loadingText = document.querySelector('.loadingtext');
+            loadingText.innerHTML = loadingText.textContent.split('').map(function(char) {
+                return '<span>' + char + '</span>';
+            }).join('');
+
+            // left：绘制省份地图，绑定省份地图点击城市时变化
+            $.getJSON(filepath, function (ret) {
+                echarts.registerMap(fullname, ret);
+                // 绘制省份对应易积水点地图
+                drawCityMap(myChart, fullname);
+
+                // 点击城市后！！！！！！！！
+                myChart.on('click', function (params) {
+                    // console.log('点击了城市:', params.name);
+                    // 易积水点降水量-积水深度模拟曲线——>城市天气预警
+                    if (!forWater.classList.contains("hidden")) {
+                        forWater.classList.add("hidden")
+                    }
+                    if (forWaring.classList.contains("hidden")) {
+                        forWaring.classList.remove("hidden");
+                    }
+
+                    closeDiv();
+                    
+                    $.ajax({
+                        type: 'GET',
+                        url: '/get_area_points/',
+                        data: { cityname: params.name },
+                        success: function(response) {
+                            console.log('查询结果：', response);
+                            // districtList = response.district_names;
+                            waterPointList = response.water_points;
+                            // console.log('区域名称列表:', districtList);
+                            // console.log('易积水点位经度和纬度列表:', waterPointList);
+
+                            // 绘制城市易积水点地图
+                            document.getElementById('citymap-title').innerText = params.name+"易积水点地图";
+                            waterPoints(params.name, waterPointList, iconImg, iconImg2);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Ajax请求失败:', error);
+                        }
+                    });
+                    $.ajax({
+                        type: 'GET',
+                        url: '/get_city_data/',
+                        data: { cityname: params.name },
+                        success: function(response) {
+                            landUse = response.land_use;
+                            terrain = response.terrain;
+                            // right-绘制地形地貌、一级土地利用数据
+                            drawTerrain(terrainpie, terrain, params.name);
+                            drawLandUse(landpie, landUse, params.name);
+                            
+                            document.getElementById('now-rowtitle').innerText = params.name;
+                            // center-默认展示第一个城市（省会城市）六项数据和天气预警
+                            getClickLocation(params.name, function(location) {
+                            console.log("loc2", document.getElementById('locationthis').innerText);
+                            getCityWeatherData(location);
+                            getCityWeatherWaring(location);
+                        });
+
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Ajax请求失败:', error);
+                        }
+                    });
+                    //right-填写基础设施数据
+                    $.ajax({
+                        url: '/get_facility_count/',
+                        method: 'GET',
+                        data: { cityname: params.name },
+                        success: function(response) {
+                            fhead.innerText = params.name+"基础设施";
+                            housedata.innerText = response.house_count;
+                            schooldata.innerText = response.school_count;
+                            hospitaldata.innerText = response.hospital_count;
+                        },
+                        error: function(xhr, status, error) {
+                            // 处理错误情况
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
+
+            // 刚加载网页立刻绘制！！！！！！
+            $.ajax({
+                type: 'GET',
+                url: '/get_city_waterpoints/',
+                data: { fullname: fullname },
+                success: function(data) {
+                    // 省份城市名列表
+                    for (var i = 0; i < data.length; i++) {
+                        cityWaterpointsDict[data[i].name] = data[i].total_waterpoints;
+                        cityNamesList.push(data[i].name);
+                    }
+                    // console.log('城市易积水点字典：', cityWaterpointsDict);
+                    // right-绘制地形地貌、一级土地利用数据-省份全部的
+                    getProvinceData(cityNamesList, function(provinceData) {
+                        landUse = provinceData.land_use;
+                        terrain = provinceData.terrain;
+                        drawTerrain(terrainpie, terrain, fullname);
+                        drawLandUse(landpie, landUse, fullname);
+
+                        //获取城市易积水、气候数据整合型列表
+                        // left-实时数据
+                        getCityCoordinatesWithWaterpoints(cityNamesList, cityWaterpointsDict, function() {
+                            weahead.innerText = fullname + "实时数据";
+                            document.getElementById('now-rowtitle').innerText = cityNamesList[0];
+                            // center-默认展示第一个城市（省会城市）六项数据和天气预警
+                            // 使用getClickLocation
+                            getClickLocation(cityNamesList[0], function(location) {
+                                console.log("loc2", document.getElementById('locationthis').innerText);
+                                // getCityWeatherData(location);
+                                // getCityWeatherWaring(location);
+                                getCityWeatherData(location, function() {
+                                    getCityWeatherWaring(location, function() {
+                                        // 在天气预警数据处理完毕后等待2秒
+                                        setTimeout(function() {
+                                            // 2秒后执行的代码
+                                            hideLoading(); // 隐藏加载动画
+                                        }, 2000); // 2000毫秒后执行
+                                    });
+                                });
+                            });
+                        });
+
+                        //添加历史七天日期 
+                        selectInput();
+                    });
+
+                    // center-默认展示第一个城市（省会城市）易积水点地图
+                    $.ajax({
+                        type: 'GET',
+                        url: '/get_area_points/',
+                        data: { cityname: cityNamesList[0] },
+                        success: function(response) {
+                            document.getElementById('citymap-title').innerText = cityNamesList[0]+"易积水点地图";
+                            // districtList = response.district_names;
+                            waterPointList = response.water_points;
+                            // console.log('区域名称列表:', districtList);
+                            // console.log('易积水点位经度和纬度列表:', waterPointList);
+                            waterPoints(cityNamesList[0], waterPointList, iconImg, iconImg2);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Ajax请求失败:', error);
+                        }
+                    });
+                    //right-填写基础设施数据（省份）
+                    $.ajax({
+                        url: '/get_facility_countall/',
+                        method: 'GET',
+                        data: { citynamelist: cityNamesList },
+                        success: function(response) {
+                            fhead.innerText = fullname+"基础设施总数";
+                            housedata.innerText = response.house_count_total;
+                            schooldata.innerText = response.school_count_total;
+                            hospitaldata.innerText = response.hospital_count_total;
+                        },
+                        error: function(xhr, status, error) {
+                            // 处理错误情况
+                            console.error('Error:', error);
+                        }
+                    });
+                },
+                error: function(error) {
+                    console.log('查询失败：', error);
+                }
+            });
+
+        };
+        
+        // 获取省份全部地形地貌和一级土地利用分类数据
+        function getProvinceData(cityList, callback) {
+            var provinceData = {
+                terrain: {
+                    plain: 0,
+                    mountain: 0,
+                    hill: 0,
+                    desert: 0,
+                    water_body: 0
+                },
+                land_use: {
+                    arable_land: 0,
+                    garden_land: 0,
+                    forest_land: 0,
+                    grassland: 0,
+                    wetland: 0,
+                    transport_land: 0,
+                    urban_and_industrial_land: 0,
+                    water_and_water_facility_land: 0
+                }
+            };
+
+            var count = 0;
+
+            cityList.forEach(function(cityName) {
+                $.ajax({
+                    url: '/get_city_data/',
+                    type: 'GET',
+                    data: {
+                        cityname: cityName
+                    },
+                    success: function(data) {
+                        for (const key of Object.keys(provinceData.terrain)) {
+                            provinceData.terrain[key] += parseFloat(data.terrain[key]);
+                        }
+
+                        for (const key of Object.keys(provinceData.land_use)) {
+                            provinceData.land_use[key] += parseFloat(data.land_use[key]);
+                        }
+
+                        count++;
+                        if (count === cityList.length) {
+                            callback(provinceData);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        // 如果发生错误，也要检查是否已获取到所有城市的数据
+                        count++;
+                        if (count === cityList.length) {
+                            callback(provinceData);
+                        }
+                    }
+                });
+            });
+        }
+
+        // center=易积水点地图绘制BMapGL
+        function waterPoints(cityname, waterPointList, iconImg, iconImg2) {
+            // var map = new BMapGL.Map('d-map');
+            var map = new BMapGL.Map('d-map', {
+                style: {
+                    styleJson: mapstyle
+                }
+
+            });
+            map.clearOverlays();
+            map.centerAndZoom(cityname, 12);
+            // map.setTilt(50);
+            // map.enableScrollWheelZoom(true);
+            // map.disableScrollWheelZoom(true);
+            map.setHeading(60);
+            map.setDisplayOptions({
+                skyColors: ['rgba(51, 51, 51, 0)', 'rgba(51, 51, 51, 0.6)']
+            });
+            var infoWindow = new BMapGL.InfoWindow();
+            var lastClickedMarker = null;
+            // 地图加载完成后再批量添加标记点
+            map.addEventListener('tilesloaded', function() {
+                try {
+                    
+                    // 确保waterPointList中有数据
+                    if (waterPointList && waterPointList.length > 0) {
+                        console.log('易积水点位第一个经度:', waterPointList[0].longitude);
+                        console.log('易积水点位第一个纬度:', waterPointList[0].latitude);
+                        console.log('类型检查:', typeof waterPointList[0].longitude, typeof waterPointList[0].latitude);
+                        var markers = [];
+                        var myIcon = new BMapGL.Icon(iconImg, new BMapGL.Size(35, 35));
+                        var myIcon2 = new BMapGL.Icon(iconImg2, new BMapGL.Size(35, 35));
+
+                        for (var i = 0; i < waterPointList.length; i++) {
+                            var point = new BMapGL.Point(waterPointList[i].longitude, waterPointList[i].latitude);
+                            var marker = new BMapGL.Marker(point, {
+                                icon: myIcon
+                            });
+                            // var marker = new BMapGL.Marker(point);
+                            marker.index = i;
+                            markers.push(marker);
+                        }
+                        for (var j = 0; j < markers.length; j++) {
+                            map.addOverlay(markers[j]);
+                        }
+
+                        // 点击标记点时图标/数据变化
+                        markers.forEach(function(marker) {
+                            marker.addEventListener('click', function() {
+                                
+                                if (!forWaring.classList.contains("hidden")) {
+                                    forWaring.classList.add("hidden");
+                                }
+                                if (forWater.classList.contains("hidden")) {
+                                    forWater.classList.remove("hidden");
+                                }
+
+                                // 图标变化
+                                if (lastClickedMarker && lastClickedMarker !== this) {
+                                    lastClickedMarker.setIcon(myIcon);
+                                }
+                                lastClickedMarker = this; // 记录当前点击的标记点
+                                
+                                // 输出标记点的经度和纬度
+                                var point = this.getPosition();
+                                this.setIcon(myIcon2);
+                                map.centerAndZoom(point, 18);
+                                console.log('经度:', point.lng, '纬度:', point.lat);
+
+                                var formattedLng = point.lng.toFixed(2);
+                                var formattedLat = point.lat.toFixed(2);
+                                var location = formattedLng + "," + formattedLat;
+                                document.getElementById('locationthis').innerText = location;
+                                var swaterdata = 0;// 模拟积水深度
+
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/get_weather/',
+                                    data: { location: location },
+                                    success: function(response) {
+                                        console.log('查询结果：', response);
+                                        document.querySelector('.condition_icon').src = "{% static 'icons/' %}" + response.condition_icon + ".svg";
+                                        document.getElementById('condition_text').innerText = response.condition_text;
+                                        document.getElementById('precipitation').innerText = response.precipitation;
+                                        document.getElementById('humidity').innerText = response.humidity;
+                                        document.getElementById('temperature').innerText = response.temperature;
+                                        document.getElementById('wind_direction').innerText = response.wind_direction;
+                                        document.getElementById('wind_scale').innerText = response.wind_scale;
+                                        document.getElementById('wind_speed').innerText = response.wind_speed;
+                                        swaterdata = parseFloat((response.precipitation * Math.random()).toFixed(2));
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('Ajax请求失败:', error);
+                                    }
+                                });
+                                // center-绘制易积水点位-积水深度模拟曲线
+                                $.ajax({
+                                    type: 'GET',
+                                    url: '/get_hourly_precipitation/',
+                                    data: { location: location },
+                                    success: function(response) {
+                                        // console.log('查询结果：', response);
+                                        var simulationResults = simulateWaterAccumulation(response.forecast);
+                                        // console.log('时间、降水量和模拟的积水深度：', simulationResults);
+                                        var simulateChart = echarts.init(document.getElementById('forwater'), "dark");
+                                        drawHourlyLine(simulateChart, simulationResults);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('Ajax请求失败:', error);
+                                    }
+                                });
+
+                                //标注窗口
+                                var geoc = new BMapGL.Geocoder();
+                                geoc.getLocation(point, function(result) {
+                                    document.getElementById('now-rowtitle').innerText = result.address;
+                                    var addressInfo = "地址：<br>" + result.address + "<br>当前积水深度：" + swaterdata + " mm";
+                                    infoWindow = new BMapGL.InfoWindow(addressInfo, {
+                                        title: cityname
+                                    });
+                                    map.openInfoWindow(infoWindow, point);
+                                });
+                            });
+                            
+                        });
+                        // 监听地图点击事件
+                        map.addEventListener('click', function(e) {
+                            var target = e.domEvent.target;
+                            if (target.tagName !== 'IMG') {
+                                map.centerAndZoom(cityname, 12);
+                                infoWindow.close();
+                            }
+                            document.getElementById('now-rowtitle').innerText = cityname;
+                            // center-默认展示第一个城市（省会城市）六项数据和天气预警
+                            // 易积水点降水量-积水深度模拟曲线——>城市天气预警
+                            if (!forWater.classList.contains("hidden")) {
+                                forWater.classList.add("hidden")
+                            }
+                            if (forWaring.classList.contains("hidden")) {
+                                forWaring.classList.remove("hidden");
+                            }
+                            // 使用getClickLocation
+                            getClickLocation(cityname, function(location) {
+                                console.log("loc2", document.getElementById('locationthis').innerText);
+                                getCityWeatherData(location);
+                                getCityWeatherWaring(location);
+                            });
+                            // map.setTilt(50);
+                            // map.setHeading(60);
+                        });
+
+                        var bdary = new BMapGL.Boundary();
+                        bdary.get(cityname, function (rs) {
+                            // 绘制行政区
+                            for (var i = 0; i < rs.boundaries.length; i++) {
+                                var xyArr = rs.boundaries[i].split(';');
+                                var ptArr = [];
+                                for (var j = 0; j < xyArr.length; j++) {
+                                    var tmp = xyArr[j].split(',');
+                                    var pt = new BMapGL.Point(tmp[0], tmp[1]);
+                                    ptArr.push(pt);
+                                }
+                                // var mapmask = new BMapGL.MapMask(ptArr, {
+                                //     showRegion: 'inside', // 显示区域范围以内部分
+                                //     isBuildingMask: true, // 楼块是否参与掩膜
+                                //     isPoiMask: true, // poi标注是否参与掩膜
+                                //     isMapMask: true, // 底图是否参与掩膜
+                                // });
+                                // map.addOverlay(mapmask);
+                                var border = new BMapGL.Polyline(ptArr, {
+                                    strokeColor: '#4ca7a2',
+                                    strokeWeight: 6,
+                                    strokeOpacity: 1
+                                });
+                                map.addOverlay(border);
+                            }
+                        });
+                    } else {
+                        console.error('waterPointList为空或不包含任何数据。');
+                    }
+                } catch (error) {
+                    console.error('添加标记点时发生错误:', error);
+                }
+            });
+        } 
+        // 天气数据列表数据及绘制
+        function getCityCoordinatesWithWaterpoints(cityList, cityWaterpointsDict, callback) {
+            var coordinates = [];
+            var geoc = new BMapGL.Geocoder();
+            var processedCities = 0; // 计数器用于跟踪已处理的城市数量
+
+            cityList.forEach(function(cityName) {
+                geoc.getPoint(cityName, function(point) {
+                    processedCities++;
+                    if (point) {
+                        var lng = point.lng.toFixed(2);
+                        var lat = point.lat.toFixed(2);
+                        var waterpoints = cityWaterpointsDict[cityName] || 0; 
+                        coordinates.push({ city: cityName, longitude: lng, latitude: lat, waterpoints: waterpoints });
+                    } else {
+                        console.error('无法获取到城市的经纬度：', cityName);
+                    }
+
+                    // 判断是否已处理完所有城市
+                    if (processedCities === cityList.length) {
+                        // 获取天气数据列表并绘制，完成后执行回调
+                        getWeatherDataList(coordinates, callback);
+                    }
+                }, cityName);
+            });
+        }
+        // 获取天气数据列表，并在完成后调用回调
+        function getWeatherDataList(cityCoordinates, callback) {
+            var weatherDataList = [];
+            var requests = cityCoordinates.map(city => new Promise((resolve, reject) => {
+                var location = city.longitude + "," + city.latitude;
+                $.ajax({
+                    type: 'GET',
+                    url: '/get_weather/',
+                    data: { location: location },
+                    success: function(response) {
+                        resolve({
+                            city: city.city,
+                            weather: response.condition_text,
+                            temperature: response.temperature + "℃",
+                            precipitation: response.precipitation + "mm",
+                            waterlogging: city.waterpoints + "个"
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        reject(error);
+                    }
+                });
+            }));
+
+            Promise.all(requests)
+                .then(results => {
+                    weatherDataList = results;
+                    displayWeatherData(weatherDataList); // 绘制天气数据列表
+                    if (callback) {
+                        callback(); // 完成后调用回调函数
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        // 绘制天气数据列表
+        function displayWeatherData(weatherDataList) {
+            // 清空目标元素的内容
+            cityWeatherDiv.innerHTML = '';
+
+            // 创建表格元素
+            var table = document.createElement('table');
+            table.border = "1";
+
+            // 创建表头
+            var thead = document.createElement('thead');
+            var trHead = document.createElement('tr');
+            var thCity = document.createElement('th');
+            thCity.textContent = "城市";
+            var thWeather = document.createElement('th');
+            thWeather.textContent = "天气";
+            var thTemperature = document.createElement('th');
+            thTemperature.textContent = "温度";
+            var thPrecipitation = document.createElement('th');
+            thPrecipitation.textContent = "降水";
+            var thWaterlogging = document.createElement('th');
+            thWaterlogging.textContent = "易积水点";
+
+            trHead.appendChild(thCity);
+            trHead.appendChild(thWeather);
+            trHead.appendChild(thTemperature);
+            trHead.appendChild(thPrecipitation);
+            trHead.appendChild(thWaterlogging);
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+
+            // 创建表格内容
+            var tbody = document.createElement('tbody');
+            weatherDataList.forEach(function(item) {
+                var tr = document.createElement('tr');
+                var tdCity = document.createElement('td');
+                tdCity.textContent = item.city;
+                var tdWeather = document.createElement('td');
+                tdWeather.textContent = item.weather;
+                var tdTemperature = document.createElement('td');
+                tdTemperature.textContent = item.temperature;
+                var tdPrecipitation = document.createElement('td');
+                tdPrecipitation.textContent = item.precipitation;
+                var tdWaterlogging = document.createElement('td');
+                tdWaterlogging.textContent = item.waterlogging;
+
+                tr.appendChild(tdCity);
+                tr.appendChild(tdWeather);
+                tr.appendChild(tdTemperature);
+                tr.appendChild(tdPrecipitation);
+                tr.appendChild(tdWaterlogging);
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+
+            // 将表格插入到目标元素中
+            cityWeatherDiv.appendChild(table);
+        }
+        
+        // 降水量模拟积水深度
+        function simulateWaterAccumulation(forecasts) {
+            var results = []; // 初始化结果列表，用于存储每小时的时间、降水量和积水深度
+            var currentWaterDepth = 0; // 当前积水深度
+            var lastHourPrecipitation = 0; // 上一小时的降水量
+
+            for (var i = 0; i < forecasts.length; i++) {
+                var forecastTime = forecasts[i][0]; // 获取预报时间
+                var precipitation = parseFloat(forecasts[i][1]);
+                var randomFactor = Math.random();
+
+                if (lastHourPrecipitation > 0) {
+                    // 如果上一小时有降水，则基于上一小时的降水量和随机数增加积水深度
+                    currentWaterDepth += lastHourPrecipitation * randomFactor;
+                } else {
+                    // 如果上一小时没有降水，则基于随机数减少积水深度
+                    currentWaterDepth = Math.max(0, currentWaterDepth - randomFactor);
+                }
+                currentWaterDepth = parseFloat(currentWaterDepth.toFixed(2));
+                lastHourPrecipitation = precipitation;
+
+                results.push([forecastTime, precipitation, currentWaterDepth]);
+            }
+
+            return results;
+        }
+        //根据城市名查询对应实时六项天气数据——>修改为通过全局地理定位
+        function getCityWeatherData(locationclick, callback) {
+            $.ajax({
+                type: 'GET',
+                url: '/get_weather/',
+                data: { location: locationclick },
+                success: function(response) {
+                    document.querySelector('.condition_icon').src = "{% static 'icons/' %}" + response.condition_icon + ".svg";
+                    document.getElementById('condition_text').innerText = response.condition_text;
+                    document.getElementById('precipitation').innerText = response.precipitation;
+                    document.getElementById('humidity').innerText = response.humidity;
+                    document.getElementById('temperature').innerText = response.temperature;
+                    document.getElementById('wind_direction').innerText = response.wind_direction;
+                    document.getElementById('wind_scale').innerText = response.wind_scale;
+                    document.getElementById('wind_speed').innerText = response.wind_speed;
+
+                    if (callback && typeof(callback) === "function") {
+                        callback(); // 调用回调函数
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ajax请求失败:', error);
+                    if (callback && typeof(callback) === "function") {
+                        callback(); // 即使请求失败，也调用回调函数，可能需要在回调函数中处理错误
+                    }
+                }
+            });
+        }
+        // //根据城市名查询对应天气预警数据——>修改为通过全局地理定位
+        // function getCityWeatherWaring(locationclick, callback) {
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: '/get_weather_warning/',
+        //         data: { location: locationclick },
+        //         success: function(response) {
+        //             // 在这里处理天气数据的响应
+        //             console.log('查询结果：', response);
+        //             // 更新页面中的天气信息
+        //             if(response.hasWarning == true){
+        //                 document.querySelector('.waring-icon').src = "{% static 'icons/' %}" + response.typeId + ".svg";
+        //                 document.getElementById('waring-title').innerText = response.title;
+        //                 document.getElementById('waring-time').innerText = response.pubTime;
+        //                 document.getElementById('waring-sender').innerText = response.sender;
+        //                 document.getElementById('waring-text').innerText = response.description;
+        //                 setWarningTitleColor(response.severityColor);
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error('Ajax请求失败:', error);
+        //         }
+        //     });
+        // }
+        function getCityWeatherWaring(locationclick, callback) {
+            $.ajax({
+                type: 'GET',
+                url: '/get_weather_warning/',
+                data: { location: locationclick },
+                success: function(response) {
+                    console.log('查询结果：', response);
+                    if(response.hasWarning == true){
+                        document.querySelector('.waring-icon').src = "{% static 'icons/' %}" + response.typeId + ".svg";
+                        document.getElementById('waring-title').innerText = response.title;
+                        document.getElementById('waring-time').innerText = response.pubTime;
+                        document.getElementById('waring-sender').innerText = response.sender;
+                        document.getElementById('waring-text').innerText = response.description;
+                        setWarningTitleColor(response.severityColor);
+                    } else {
+                        document.getElementById('waring-title').innerText = "无天气灾害预警";
+                    }
+
+                    if (callback && typeof(callback) === "function") {
+                        callback(); // 调用回调函数
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ajax请求失败:', error);
+                    if (callback && typeof(callback) === "function") {
+                        callback(); // 即使请求失败，也调用回调函数，可能需要在回调函数中处理错误
+                    }
+                }
+            });
+        }
+        //根据城市名查询对应天气预警数据
+        function getClickLocation(cityName, callback) {
+            // 创建地理编码实例
+            var geoc = new BMapGL.Geocoder();
+            geoc.getPoint(cityName, function(point) {
+                if (point) {
+                    document.getElementById('locationthis').innerText = point.lng.toFixed(2) + "," + point.lat.toFixed(2);
+                    //将使用的地点即设置为全局地理定位
+                    // 调用回调函数，并将得到的经纬度传递过去
+                    if (callback && typeof callback === 'function') {
+                        callback(point.lng.toFixed(2) + "," + point.lat.toFixed(2));
+                    }
+                } else {
+                    console.error('无法获取到城市的经纬度：', cityName);
+                }
+            }, cityName);
+        }
+
+        //设置天气预警文字颜色对应
+        function setWarningTitleColor(severityColor) {
+            var colorHex; // 用于存储颜色的十六进制值
+            switch (severityColor) {
+                case "White":
+                    colorHex = "#FFFFFF"; // 白色
+                    break;
+                case "Blue":
+                    colorHex = "#73b9bc"; // 蓝色
+                    break;
+                case "Green":
+                    colorHex = "#73a373"; // 绿色
+                    break;
+                case "Yellow":
+                    colorHex = "#eedd78"; // 黄色
+                    break;
+                case "Orange":
+                    colorHex = "#f49f42"; // 橙色
+                    break;
+                case "Red":
+                    colorHex = "#dd6b66"; // 红色
+                    break;
+                case "Black":
+                    colorHex = "#7289ab"; // 黑色
+                    break;
+                default:
+                    colorHex = "#FFFFFF"; // 默认为白色
+            }
+            // 设置标题的字体颜色
+            document.getElementById("waring-title").style.color = colorHex;
+        }
+        //设置select框内文字
+        function selectInput(){
+            var currentDate = new Date();
+
+            // 获取今天的日期
+            var today = currentDate.getDate();
+            var month = currentDate.getMonth() + 1;
+            var year = currentDate.getFullYear();
+            var currentDateString = year + '年' + (month < 10 ? '0' : '') + month + '月' + (today < 10 ? '0' : '') + today + '日';
+            console.log("currentDate",currentDateString);
+
+            // 获取之前七天的日期
+            var sevenDaysAgoDates = [];
+            for (var i = 1; i <= 7; i++) {
+                var date = new Date();
+                date.setDate(today - i);
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                var dateString = year + '年' + (month < 10 ? '0' : '') + month + '月' + (day < 10 ? '0' : '') + day + '日';
+                sevenDaysAgoDates.push(dateString);
+            }
+
+            // 获取 select 元素
+            var selectElement = document.getElementById('date-select');
+
+            var optionToday = new Option(currentDateString, currentDateString);
+            selectElement.add(optionToday);
+
+            sevenDaysAgoDates.forEach(function(dateString) {
+                var option = new Option(dateString, dateString);
+                selectElement.add(option);
+            });
+        }
+        function closeDiv() {
+            var div = document.querySelector(".district-lasttimeselect");
+            div.style.display = 'none'; // 隐藏div
+        }
+        function openDiv(selectedDate) {
+            var div = document.querySelector(".district-lasttimeselect");
+            div.style.display = 'flex'; // 打开div
+
+            var selectElement = document.getElementById('date-select');
+            selectElement.selectedIndex = 0;
+            var formattedDate = selectedDate.replace(/年|月/g, '').replace('日', '');
+
+            document.getElementById('click-data').innerText = selectedDate;
+            document.getElementById('click-location').innerText = document.getElementById('now-rowtitle').innerText;
+            var locationthis = document.getElementById('locationthis').innerText;
+            $.ajax({
+                type: 'GET',
+                url: '/get_historical_weather/',
+                data: {
+                    location: locationthis,
+                    date: formattedDate
+                },
+                success: function(response) {
+                    console.log('查询结果：', response.hourly_weather);
+                    document.getElementById('click-precipitation').innerText = response.total_precip;
+                    document.getElementById('click-high').innerText = response.max_temp;
+                    document.getElementById('click-low').innerText = response.min_temp;
+                    var simulateData4 = simulateWaterDepthwithTemp(response.hourly_weather);
+
+                    // 绘制历史曲线
+                    var myChart4 = echarts.init(document.getElementById('click-line4'),'dark');
+                    drawChart04(myChart4, simulateData4);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ajax请求失败:', error);
+                }
+            });
+        }
+        function simulateWaterDepthwithTemp(forecasts) {
+            var results = [];
+            var currentWaterDepth = 0;
+
+            for (var i = 0; i < forecasts.length; i++) {
+                var forecastTime = forecasts[i]['time'];
+                var temperature = parseFloat(forecasts[i]['temp']);
+                var precipitation = parseFloat(forecasts[i]['precip']);
+                var humidity = parseFloat(forecasts[i]['humidity']);
+                var randomFactor = Math.random();
+
+                if (precipitation > 0) {
+                    currentWaterDepth += precipitation * randomFactor; 
+                } else {
+                    currentWaterDepth *= randomFactor;
+                }
+
+                currentWaterDepth = Math.max(0, currentWaterDepth);
+                currentWaterDepth = parseFloat(currentWaterDepth.toFixed(2));
+
+                results.push({'time': forecastTime, 'temp': temperature, 'precip': precipitation, 'humidity': humidity, 'waterDepth': currentWaterDepth});
+            }
+
+            return results;
+        }
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            $('#loading').addClass('animate__animated animate__slideOutDown animate__delay-1s');
+            $('#loading').on('animationend', function() {
+                $(this).remove();
+                $('#loading-down').addClass('animate__animated animate__slideOutDown animate__faster').on('animationend', function() {
+                    $(this).remove(); // 动画完成后移除loading-down
+                });
+            });
+        }
+
+    </script>
+</body>
+</html>

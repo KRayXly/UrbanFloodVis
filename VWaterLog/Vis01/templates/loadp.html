@@ -1,0 +1,135 @@
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>UrbanFloodVis 城市内涝可视化平台</title>
+    <link rel="stylesheet" href="{% static 'css/loadp.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font.css' %}">
+    <script type="text/javascript" src="{% static 'js/mapstyle.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+    <div class="main-body">
+        <div class="hometitle">
+            <a href="/">UrbanFloodVis</a>
+        </div>
+        <div class="w-data">
+            <div class="waterall">
+                <h2 style="font-weight: 100; font-size: 20px;">经统计</h2>
+                <h2>目前全国易积水点</h2>
+                <div>共  <span>{{ total_waterpoints }}</span>  个</div>
+            </div>
+            <ul>
+                {% for city in city_waterpoints %}
+                    <li>{{ city.name }} - 易积水点数量：{{ city.total_waterpoints }}</li>
+                {% endfor %}
+            </ul>
+            <a class="btn" href="javascript:;" id="btn">
+                积水点数量排名 ↗
+            </a>
+        
+        </div>
+        <div id="map" class="map"></div>
+    </div>
+    <div class="main-bottom">
+        <span>UrbanFloodVis</span>
+        <span>
+                Lin @ <a href="">github</a>
+        </span>
+    </div>
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/china.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dark.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/e-map.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/e-data.js' %}"></script>
+    
+    <script>
+        var mydata = [
+            {% for province_data in provinces_data %}
+                {name: '{{ province_data.province_shortname }}', value: {{ province_data.num_waterpoints }}},
+            {% endfor %}
+        ];
+
+        var namedata = [
+            {% for province_data in provinces_data %}
+                {name: '{{ province_data.province_shortname }}', value: '{{ province_data.province_name }}'},
+            {% endfor %}
+        ];
+        // console.log(mydata);
+        // console.log(namedata);
+
+        let isMapDisplayed = true;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.querySelector('.btn');
+            var myChart = echarts.init(document.getElementById('map'),'dark');
+            
+            drawChinaMap(myChart, mydata);
+
+            btn.addEventListener('click', function() {
+                if (isMapDisplayed) {
+                    myChart.clear();
+                    drawHorizontalBarChart(myChart, mydata);
+
+                    myChart.on('click', function (params) {
+                        // 获取点击的省份名称
+                        var provinceName = params.name;
+                        console.log('点击了省份：', provinceName);
+                        var fullName;
+                        for (var i = 0; i < namedata.length; i++) {
+                            if (namedata[i].name === provinceName) {
+                                fullName = namedata[i].value;
+                                break;
+                            }
+                        }
+                        console.log('全称：', fullName);
+
+                        // 跳转到 citymap.html 页面，并传递 fullname 参数
+                        window.location.href = '/citymap/?fullname=' + encodeURIComponent(fullName);
+                    });
+                    
+                    this.style.backgroundColor = '#fff';
+                    this.style.color = '#000';
+                    document.getElementById('btn').innerText = '易积水点地图 ↗';
+                } else {
+                    myChart.clear();
+                    drawChinaMap(myChart, mydata);
+
+                    myChart.on('click', function (params) {
+                        // 获取点击的省份名称
+                        var provinceName = params.name;
+                        console.log('点击了省份：', provinceName);
+                        var fullName;
+                        for (var i = 0; i < namedata.length; i++) {
+                            if (namedata[i].name === provinceName) {
+                                fullName = namedata[i].value;
+                                break;
+                            }
+                        }
+                        console.log('全称：', fullName);
+
+                        // 跳转到 citymap.html 页面，并传递 fullname 参数
+                        window.location.href = '/citymap/?fullname=' + encodeURIComponent(fullName);
+                    });
+
+                    this.style.backgroundColor = '';
+                    this.style.color = '#fff';
+                    document.getElementById('btn').innerText = '积水点数量排名 ↗';
+                }
+                isMapDisplayed = !isMapDisplayed; // Toggle the state
+            });
+
+            btn.addEventListener('mouseenter', function() {
+                this.classList.add('animate__animated', 'animate__flash');
+            });
+
+            btn.addEventListener('mouseleave', function() {
+                this.classList.remove('animate__animated', 'animate__flash');
+            });
+        });
+    </script>
+</body>
+</html>

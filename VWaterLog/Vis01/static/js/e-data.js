@@ -1,4 +1,4 @@
-//绘制横向柱状图
+//绘制图表
 function drawHorizontalBarChart(myChart, mydata) {
     // 显示 Loading 动画
     myChart.showLoading();

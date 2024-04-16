@@ -7,15 +7,11 @@
     <title>UrbanFloodVis 城市内涝可视化平台</title>
     <link rel="stylesheet" href="{% static 'css/citymap.css' %}">
     <link rel="stylesheet" href="{% static 'css/font.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> -->
-    <!-- <link href="http://povestea-noastra.com/theme/huge404/Poly%20World%203D/404/images/favicon.ico" rel="shortcut icon" type="image/x-icon"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script type="text/javascript" src="{% static 'js/mapstyle.js' %}"></script>
     <script src="//bj.bcebos.com/v1/mapopen/api-demos/js/mapStyle.js"></script>
     <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=M3WLi64HOESiQu4rCLUH6mXwLYaPqLKR"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
-
-    <!-- <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak={M3WLi64HOESiQu4rCLUH6mXwLYaPqLKR}"></script> -->
 </head>
 <body>
     <div id="loading">
@@ -228,7 +224,7 @@
     </div>
 
     <div class="main-bottom">
-        <li>Lin @ <a href="">github</a></li>
+        <li>Lin @ <a href="https://github.com/KRayXly/UrbanFloodVis">github.com/KRayXly/UrbanFloodVis</a></li>
     </div>
     <script src="{% static 'js/three.min.js' %}"></script>
 	<script src="{% static 'js/index.js' %}"></script>
@@ -286,7 +282,7 @@
                 downloadLink.href = imageSrc;
                 downloadLink.download = "saved_page.png"; // 指定下载文件名
                 document.body.appendChild(downloadLink);
-                downloadLink.click(); // 触发下载
+                downloadLink.click(); 
                 document.body.removeChild(downloadLink); // 移除下载链接
             });
         });

@@ -36,7 +36,7 @@
     <div class="main-bottom">
         <span>UrbanFloodVis</span>
         <span>
-                Lin @ <a href="">github</a>
+            Lin @ <a href="https://github.com/KRayXly/UrbanFloodVis">github.com/KRayXly/UrbanFloodVis</a>
         </span>
     </div>
     <script type="text/javascript" src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
@@ -58,8 +58,7 @@
                 {name: '{{ province_data.province_shortname }}', value: '{{ province_data.province_name }}'},
             {% endfor %}
         ];
-        // console.log(mydata);
-        // console.log(namedata);
+
 
         let isMapDisplayed = true;
 
@@ -87,7 +86,6 @@
                         }
                         console.log('全称：', fullName);
 
-                        // 跳转到 citymap.html 页面，并传递 fullname 参数
                         window.location.href = '/citymap/?fullname=' + encodeURIComponent(fullName);
                     });
                     
@@ -111,7 +109,6 @@
                         }
                         console.log('全称：', fullName);
 
-                        // 跳转到 citymap.html 页面，并传递 fullname 参数
                         window.location.href = '/citymap/?fullname=' + encodeURIComponent(fullName);
                     });
 
@@ -119,7 +116,7 @@
                     this.style.color = '#fff';
                     document.getElementById('btn').innerText = '积水点数量排名 ↗';
                 }
-                isMapDisplayed = !isMapDisplayed; // Toggle the state
+                isMapDisplayed = !isMapDisplayed; 
             });
 
             btn.addEventListener('mouseenter', function() {

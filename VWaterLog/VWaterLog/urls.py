@@ -18,13 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from Vis01.views import welcome, user_info, loadp, get_city_waterpoints, citymap, get_area_points, get_city_data, get_facility_count, get_facility_countall, get_weather, get_hourly_precipitation, get_weather_warning, get_historical_weather
+from Vis01.views import welcome, loadp, get_city_waterpoints, citymap, get_area_points, get_city_data, get_facility_count, get_facility_countall, get_weather, get_hourly_precipitation, get_weather_warning, get_historical_weather
 urlpatterns = [
     # path("admin/", admin.site.urls),
     path("", welcome),
     path("loadp/", loadp),
     path("citymap/", citymap),
-    path('user-info/', user_info, name='user_info'), 
+    # path('user-info/', user_info, name='user_info'), 
     path('get_city_waterpoints/', get_city_waterpoints, name='get_city_waterpoints'),
     path('get_area_points/', get_area_points, name='get_area_points'),
     path('get_city_data/', get_city_data, name='get_city_data'),

@@ -1,4 +1,4 @@
-
+//loading模版
 var Colors = {
 	red:0xf25346,
 	yellow:0xedeb27,

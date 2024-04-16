@@ -10,7 +10,6 @@ from pyecharts.charts import Map
 from pyecharts.charts import BMap
 from pyecharts.faker import Faker
 
-from .models import User  # 导入User模型
 from .models import Province, City, District, WaterPoint, LandUse, Terrain
 from django.db.models import Count
 import requests
@@ -19,6 +18,7 @@ import requests
 import base64
 from django.views.decorators.csrf import csrf_exempt
 # # Create your views here.
+
 # def loadp(request):
 #     return render(request,"loadp.html")
 
@@ -39,18 +39,11 @@ def loadp(request):
             'num_waterpoints': province.num_waterpoints
         })
 
-    # 对省份数据按照易积水点数量进行降序排序
-    sorted_provinces = sorted(provinces_data, key=lambda x: x['num_waterpoints'], reverse=True)
-
-    # 获取易积水点数量最高的五个省份
-    top_five_provinces = sorted_provinces[:5]
-
     total_waterpoints = 0
     for province in provinces_data:
         total_waterpoints += province['num_waterpoints']
 
-    # 将查询结果传递给模板
-    return render(request, 'loadp.html', {'provinces_data': provinces_data, 'top_five_provinces': top_five_provinces, 'total_waterpoints': total_waterpoints})
+    return render(request, 'loadp.html', {'provinces_data': provinces_data, 'total_waterpoints': total_waterpoints})
 
 def citymap(request):
     return render(request, 'citymap.html')
@@ -59,14 +52,13 @@ def welcome(request):
     return render(request, 'welcome.html')
 
 def get_city_waterpoints(request):
-    fullname = request.GET.get('fullname')  # 获取前端传递的省份全称参数
+    fullname = request.GET.get('fullname')
 
     # 查询对应省份下的城市名称和每个城市易积水点数量之和
     city_waterpoints = City.objects.filter(province__name=fullname).annotate(
         total_waterpoints=Count('district__waterpoint')
     ).values('name', 'total_waterpoints')
 
-    # 将查询结果转换为字典列表并返回
     results = list(city_waterpoints)
     return JsonResponse(results, safe=False)
 
@@ -80,11 +72,8 @@ def get_area_points(request):
         # 查询杭州市对应的所有易积水点位的经度和纬度
         water_points = WaterPoint.objects.filter(district_geocode__city_geocode__name=city_name).values('longitude', 'latitude')
 
-        # 将结果转换为列表形式
         district_names = list(districts)
         water_points_list = list(water_points)
-
-        # 构造响应数据
         response_data = {
             'district_names': district_names,
             'water_points': water_points_list
@@ -105,7 +94,6 @@ def get_city_data(request):
                 land_use_data = LandUse.objects.get(city_geocode=city_data.geocode)
                 terrain_data = Terrain.objects.get(city_geocode=city_data.geocode)
                 
-                # 构建返回数据
                 response_data = {
                     'city_name': city_name,
                     'land_use': {
@@ -137,27 +125,24 @@ def get_city_data(request):
     else:
         return JsonResponse({'error': 'Only GET method is allowed'}, status=405)
 
-def user_info(request):
-    if request.method == 'POST':
-        username = request.POST.get('username', '')
-        print("Received username:", username)  # 输出用户名
-        try:
-            user = User.objects.get(username=username)
-            password = user.password
-            phone = user.phone
-            print("Password:", password)  # 输出密码
-            print("Phone:", phone)  # 输出手机号
-            return render(request, 'loadp.html', {'username': username, 'password': password, 'phone': phone})
-        except User.DoesNotExist:
-            return render(request, 'loadp.html', {'error_message': 'User does not exist'})
-    return render(request, 'loadp.html')
+# def user_info(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username', '')
+#         print("Received username:", username)  # 输出用户名
+#         try:
+#             user = User.objects.get(username=username)
+#             password = user.password
+#             phone = user.phone
+#             print("Password:", password)  # 输出密码
+#             print("Phone:", phone)  # 输出手机号
+#             return render(request, 'loadp.html', {'username': username, 'password': password, 'phone': phone})
+#         except User.DoesNotExist:
+#             return render(request, 'loadp.html', {'error_message': 'User does not exist'})
+#     return render(request, 'loadp.html')
 
 def get_hos_count(city_name):
-    # 百度地图API的AK（Access Key），需要替换为您自己的AK
     ak = "8siofvmlpTcCQFOEPJ0w023GXWig7J3k"
-    # 地点检索API的URL
     url = "http://api.map.baidu.com/place/v2/search"
-    # 查询参数
     params = {
         "query": "医疗",
         "region": city_name,
@@ -179,11 +164,8 @@ def get_hos_count(city_name):
         print("Error:", e)
         return 0
 def get_school_count(city_name):
-    # 百度地图API的AK（Access Key），需要替换为您自己的AK
     ak = "8siofvmlpTcCQFOEPJ0w023GXWig7J3k"
-    # 地点检索API的URL
     url = "http://api.map.baidu.com/place/v2/search"
-    # 查询参数
     params = {
         "query": "教育培训",
         "region": city_name,
@@ -205,11 +187,8 @@ def get_school_count(city_name):
         print("Error:", e)
         return 0
 def get_house_count(city_name):
-    # 百度地图API的AK（Access Key），需要替换为您自己的AK
     ak = "8siofvmlpTcCQFOEPJ0w023GXWig7J3k"
-    # 地点检索API的URL
     url = "http://api.map.baidu.com/place/v2/search"
-    # 查询参数
     params = {
         "query": "住宅区",
         "region": city_name,
@@ -250,7 +229,6 @@ def get_facility_countall(request):
             school_count = 0
             hospital_count = 0
             for city_name in city_name_list:
-                # 在这里执行您的逻辑来获取每个城市的住宅区、医院和学校数量
                 house_count += get_house_count(city_name)
                 school_count += get_school_count(city_name)
                 hospital_count += get_hos_count(city_name)
@@ -327,8 +305,8 @@ def get_weather_warning(request):
         data = response.json()
 
         if data['code'] == "200" and data['warning']:
-            warning = data['warning'][0]  # Assuming we take the first warning if multiple are returned
-            formatted_pubTime = warning['pubTime'].replace('T', ' ')[:16]  # Adjusting the format
+            warning = data['warning'][0] 
+            formatted_pubTime = warning['pubTime'].replace('T', ' ')[:16]
 
             warning_info = {
                 'sender': warning['sender'],
@@ -359,8 +337,8 @@ def get_historical_ID(location):
 
         if data['code'] == "200" and data['location']:
             # 确保location列表中至少有一个元素
-            first_location = data['location'][0]  # 获取列表中的第一个元素
-            location_id = first_location['id']  # 然后从这个元素中获取id
+            first_location = data['location'][0] 
+            location_id = first_location['id']
             print(location_id)
             return location_id
         else:
@@ -386,7 +364,6 @@ def get_historical_weather(request):
             data = response.json()
 
             if data['code'] == "200":
-                # 从API响应中提取所需数据
                 weather_info = {
                     'max_temp': data['weatherDaily']['tempMax'],  # 最高温度
                     'min_temp': data['weatherDaily']['tempMin'],  # 最低温度
@@ -421,54 +398,39 @@ def get_historical_weather(request):
 #         with open('C:\\Users\\12297\\Desktop\\weather_district_id.csv', 'r', encoding='utf-8') as file:
 #             reader = csv.DictReader(file)
 #             for row in reader:
-#                 province_name = row['province'] #省份名称
-#                 city_name = row['city'] #城市名称
-#                 district_name = row['district'] #区域名称
-#                 city_geocode = row['city_geocode'] #城市地理编码
-#                 print(f"City name: {city_name}, City geocode: {city_geocode}")  # 打印城市名称和地理编码
-#                 district_geocode = row['district_geocode'] #区域地理编码
+#                 province_name = row['province']
+#                 city_name = row['city']
+#                 district_name = row['district']
+#                 city_geocode = row['city_geocode']
+#                 print(f"City name: {city_name}, City geocode: {city_geocode}")
+#                 district_geocode = row['district_geocode']
 #                 province = Province.objects.get(name=province_name)
 #                 city, _ = City.objects.get_or_create(name=city_name, province_id=province.id, geocode=city_geocode)
 #                 city_instance = City.objects.get(geocode=city_geocode)
-#                 print(f"City instance: {city_instance}")  # 打印获取的城市实例
+#                 print(f"City instance: {city_instance}")
 #                 # 检查是否已经存在具有相同 district_geocode 的记录
 #                 existing_district = District.objects.filter(geocode=district_geocode).first()
 
-#                 # 如果已经存在，直接使用现有记录
 #                 if existing_district:
 #                     district = existing_district
 #                 else:
-#                     # 否则，创建新的记录
 #                     district, _ = District.objects.get_or_create(
 #                         name=district_name,
 #                         geocode=district_geocode,
 #                         city_geocode=city_instance,
-#                         longitude=float(row['lon']), # 经度
-#                         latitude=float(row['lat']), # 纬度
-#                         forecast_longitude=float(row['fc_lon']), # 预报经度
+#                         longitude=float(row['lon']), 
+#                         latitude=float(row['lat']),
+#                         forecast_longitude=float(row['fc_lon']),
 #                         forecast_latitude=float(row['fc_lat']),
-#                         actual_longitude=float(row['rt_lon']), # 实况经度
+#                         actual_longitude=float(row['rt_lon']),
 #                         actual_latitude=float(row['rt_lat'])
 #                     )
-
-#                 # # 更新城市信息
-#                 # if city.longitude is None or city.latitude is None:
-#                 #     city.longitude = district.longitude
-#                 #     city.latitude = district.latitude
-#                 #     city.save()
-#                 # # 更新省份信息
-#                 # if province.longitude is None or province.latitude is None:
-#                 #     province.longitude = district.longitude
-#                 #     province.latitude = district.latitude
-#                 #     province.save()
-
 #                 # 生成5-15个易积水点
 #                 num_water_points = random.randint(5, 15)
 #                 for _ in range(num_water_points):
 #                     # 随机生成经度和纬度
 #                     longitude = random.uniform(district.longitude - 0.1, district.longitude + 0.1)
 #                     latitude = random.uniform(district.latitude - 0.1, district.latitude + 0.1)
-
 #                     WaterPoint.objects.create(longitude=longitude, latitude=latitude, district_geocode=district)
 #         logging.info('Successfully generated water points.')
 #     except Exception as e:
